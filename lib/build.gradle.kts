@@ -7,8 +7,8 @@
  */
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.4.31"
-    id("org.openapi.generator") version "5.1.1"
+    id("org.jetbrains.kotlin.jvm") version "1.5.21"
+    id("org.openapi.generator") version "5.2.0"
 
     `java-library`
 }
@@ -19,22 +19,46 @@ repositories {
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
+    implementation("io.swagger:swagger-annotations:1.6.2")
+    implementation("com.github.spotbugs:spotbugs-annotations:4.3.0")
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    // Java generator standard libraries are okhttp3.x and gson 2.8.x
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("com.squareup.okhttp3:logging-interceptor:3.14.9")
+    implementation("com.google.code.gson:gson:2.8.7")
+    implementation("io.gsonfire:gson-fire:1.8.5")
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.29.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
+    testImplementation("org.assertj:assertj-core:3.20.2")
 }
 
 openApiGenerate {
-
-    generatorName.set("kotlin")
+    generatorName.set("java")
     inputSpec.set("$rootDir/specs/deepgram-v2.0.yaml")
     outputDir.set("$buildDir/generated")
     apiPackage.set("com.waltersson.deepgram.api")
     invokerPackage.set("com.waltersson.deepgram.invoker")
     modelPackage.set("com.waltersson.deepgram.model")
+
     configOptions.put("dateLibrary", "java8")
+}
+kotlin {
+    sourceSets["main"].apply {
+        kotlin.srcDir("$buildDir/generated/src/main/kotlin")
+    }
+}
+
+java {
+    sourceSets {
+        main {
+            java.srcDir("$buildDir/generated/src/main/java")
+        }
+    }
+}
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

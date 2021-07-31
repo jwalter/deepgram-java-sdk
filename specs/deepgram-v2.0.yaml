@@ -18,7 +18,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Project'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
   /projects/{project_id}:
     get:
       operationId: getProject
@@ -31,6 +33,10 @@ paths:
       responses:
         '200':
           description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
     patch:
       operationId: updateProject
       parameters:
@@ -63,3 +69,5 @@ components:
         company:
           type: string
           description: 'Name of company'
+        project_id:
+          type: string
