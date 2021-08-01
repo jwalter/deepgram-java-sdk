@@ -2,6 +2,7 @@ package com.waltersson.deepgram.sdk
 
 import com.waltersson.deepgram.api.DefaultApi
 import com.waltersson.deepgram.model.Project
+import com.waltersson.deepgram.model.Projects
 import reactor.core.publisher.Mono
 
 /*
@@ -17,6 +18,10 @@ class Deepgram(private val apiKey: String, baseUrl: String = "https://api.deepgr
 
     fun getProject(id: String): Mono<Project> {
         return client.getProject(id)
+    }
+
+    fun getProjects(): Mono<Projects> {
+        return client.getProjects()
     }
 
 }

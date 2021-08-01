@@ -2,7 +2,6 @@ package com.waltersson.deepgram.sdk
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.waltersson.deepgram.api.DefaultApi
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -61,8 +60,7 @@ class ProjectTest {
                 )
         )
 
-        val underTest = DefaultApi()
-        underTest.apiClient.basePath = server.baseUrl()
+        val underTest = Deepgram("", server.baseUrl())
         val actual = underTest.getProjects()
         StepVerifier.create(actual)
             .expectNextMatches { it.projects?.size == 1 }
