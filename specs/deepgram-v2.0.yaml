@@ -58,7 +58,14 @@ paths:
       responses:
         '200':
           description: successful operation
+security:
+  - ApiKeyAuth: []
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
   schemas:
     Project:
       title: Project

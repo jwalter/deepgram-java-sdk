@@ -23,6 +23,7 @@ class ProjectTest {
     fun getSingleProject() {
         stubFor(
             get("/projects/1")
+                .withHeader("Authorization", equalTo("Token mykey"))
                 .willReturn(
                     okJson("""
                         {
@@ -34,8 +35,9 @@ class ProjectTest {
                 )
         )
 
-        val underTest = DefaultApi()
-        underTest.apiClient.basePath = server.baseUrl()
+        val underTest = Deepgram("mykey", server.baseUrl())
+
+        // underTest.apiClient.basePath = server.baseUrl()
         val actual = underTest.getProject("1")
         StepVerifier.create(actual)
             .expectNextMatches { it.name == "name"}
