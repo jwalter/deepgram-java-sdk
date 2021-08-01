@@ -7,8 +7,11 @@
  */
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.5.21"
     id("org.openapi.generator") version "5.2.0"
+    id("org.springframework.boot") version "2.5.3"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    kotlin("jvm") version "1.5.21"
+    kotlin("plugin.spring") version "1.5.21"
 
     `java-library`
 }
@@ -19,16 +22,33 @@ repositories {
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+    implementation(platform("org.springframework:spring-framework-bom:5.3.9"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
+    // OpenAPI generator generates code with annotations from these libraries
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("io.swagger:swagger-annotations:1.6.2")
     implementation("com.github.spotbugs:spotbugs-annotations:4.3.0")
 
     // Java generator standard libraries are okhttp3.x and gson 2.8.x
-    implementation("com.squareup.okhttp3:okhttp:4.9.1")
-    implementation("com.squareup.okhttp3:logging-interceptor:3.14.9")
-    implementation("com.google.code.gson:gson:2.8.7")
-    implementation("io.gsonfire:gson-fire:1.8.5")
+//    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+//    implementation("com.squareup.okhttp3:logging-interceptor:3.14.9")
+//    implementation("com.google.code.gson:gson:2.8.7")
+//    implementation("io.gsonfire:gson-fire:1.8.5")
+
+    // library=webclient, HTTP client: Spring WebClient 5.x. JSON processing: Jackson 2.9.x
+    implementation("org.openapitools:jackson-databind-nullable:0.2.1")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+    // Maybe not needed since we won't be serializing any Kotlin data classes?
+    // implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.projectreactor:reactor-test")
 
     testImplementation("com.github.tomakehurst:wiremock-jre8:2.29.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
@@ -45,6 +65,7 @@ openApiGenerate {
     modelPackage.set("com.waltersson.deepgram.model")
 
     configOptions.put("dateLibrary", "java8")
+    configOptions.put("library", "webclient")
 }
 kotlin {
     sourceSets["main"].apply {

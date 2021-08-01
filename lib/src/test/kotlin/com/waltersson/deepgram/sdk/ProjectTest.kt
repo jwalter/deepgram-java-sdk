@@ -1,13 +1,13 @@
 package com.waltersson.deepgram.sdk
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.waltersson.deepgram.api.DefaultApi
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.waltersson.deepgram.api.DefaultApi
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.TestInstance
+import reactor.test.StepVerifier
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ProjectTest {
@@ -37,9 +37,9 @@ class ProjectTest {
         val underTest = DefaultApi()
         underTest.apiClient.basePath = server.baseUrl()
         val actual = underTest.getProject("1")
-        assertThat(actual.name).isEqualTo("name")
-        assertThat(actual.company).isEqualTo("acmeinc")
-        assertThat(actual.projectId).isEqualTo("1")
+        StepVerifier.create(actual)
+            .expectNextMatches { it.name == "name"}
+            .verifyComplete()
     }
 
     @Test
@@ -60,8 +60,9 @@ class ProjectTest {
         val underTest = DefaultApi()
         underTest.apiClient.basePath = server.baseUrl()
         val actual = underTest.getProjects()
-        assertThat(actual).hasSize(1)
-        assertThat(actual.first().name).isEqualTo("first project")
+        StepVerifier.create(actual)
+            .expectNextCount(1)
+            .verifyComplete()
     }
 
     @AfterAll
