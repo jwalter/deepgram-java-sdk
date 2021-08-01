@@ -36,8 +36,6 @@ class ProjectTest {
         )
 
         val underTest = Deepgram("mykey", server.baseUrl())
-
-        // underTest.apiClient.basePath = server.baseUrl()
         val actual = underTest.getProject("1")
         StepVerifier.create(actual)
             .expectNextMatches { it.name == "name"}
@@ -50,11 +48,15 @@ class ProjectTest {
             get("/projects")
                 .willReturn(
                     okJson("""
-                        [{
-                        "company": "acmeinc",
-                        "name": "first project",
-                        "project_id": "1"
-                        }]
+                        {
+                            "projects": [
+                                {
+                                "company": "acmeinc",
+                                "name": "first project",
+                                "project_id": "1"
+                                }
+                            ]
+                        }
                     """)
                 )
         )
@@ -63,7 +65,7 @@ class ProjectTest {
         underTest.apiClient.basePath = server.baseUrl()
         val actual = underTest.getProjects()
         StepVerifier.create(actual)
-            .expectNextCount(1)
+            .expectNextMatches { it.projects?.size == 1 }
             .verifyComplete()
     }
 

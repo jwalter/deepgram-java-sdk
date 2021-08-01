@@ -18,9 +18,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Project'
+                $ref: '#/components/schemas/Projects'
   /projects/{project_id}:
     get:
       operationId: getProject
@@ -49,15 +47,14 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                company:
-                  type: string
+              $ref: '#/components/schemas/Project'
       responses:
         '200':
           description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
 security:
   - ApiKeyAuth: []
 components:
@@ -67,6 +64,13 @@ components:
       in: header
       name: Authorization
   schemas:
+    Projects:
+      title: Projects
+      properties:
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
     Project:
       title: Project
       properties:
@@ -77,4 +81,9 @@ components:
           type: string
           description: 'Name of company'
         project_id:
+          type: string
+    MessageResponse:
+      title: Response message
+      properties:
+        message:
           type: string
