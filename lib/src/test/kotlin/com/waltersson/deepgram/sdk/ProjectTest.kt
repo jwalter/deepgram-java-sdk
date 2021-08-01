@@ -42,6 +42,32 @@ class ProjectTest {
     }
 
     @Test
+    fun patchProject() {
+        stubFor(
+            patch(urlEqualTo("/projects/1"))
+                .withRequestBody(equalToJson("""
+                    {
+                        "name": "new name",
+                        "company": "new company"
+                    }
+                """.trimIndent()))
+                .willReturn(
+                    okJson("""
+                        {
+                        "message": "This is a test"
+                        }
+                    """)
+                )
+        )
+
+        val underTest = Deepgram("mykey", server.baseUrl())
+        val actual = underTest.patchProject("1", "new name", "new company")
+        StepVerifier.create(actual)
+            .expectNextMatches { it.message == "This is a test"}
+            .verifyComplete()
+    }
+
+    @Test
     fun getAllProjects() {
         stubFor(
             get("/projects")
