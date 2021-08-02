@@ -17,17 +17,23 @@ class Deepgram(private val apiKey: String, baseUrl: String = "https://api.deepgr
         apiClient.setApiKeyPrefix("Token")
         apiClient.setApiKey(apiKey)
     }
+    private val projectApi = Projects(client)
 
-    fun getProject(id: String): Mono<Project> {
-        return client.getProject(id)
+    fun projects() = projectApi
+
+}
+
+class Projects(private val api: DefaultApi) {
+    fun list(): Mono<Projects> {
+        return api.projects
     }
 
-    fun getProjects(): Mono<Projects> {
-        return client.getProjects()
+    fun get(id: String): Mono<Project> {
+        return api.getProject(id)
     }
 
-    fun patchProject(id: String, name: String? = null, company: String? = null): Mono<MessageResponse> {
-        return client.updateProject(id, ProjectUpdate().name(name).company(company))
+    fun update(project: Project): Mono<MessageResponse> {
+        val update = ProjectUpdate().name(project.name).company(project.company)
+        return api.updateProject(project.projectId, update)
     }
-
 }
