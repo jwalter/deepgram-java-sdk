@@ -55,6 +55,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
+  /projects/{project_id}/keys:
+    get:
+      operationId: getKeys
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      description: 'Retrieves keys for the specified project. If the authenticated account has access to the members:read, admins:read, and owners:read project scopes, it will list all keys for the project. Otherwise, it will only list keys that belong to the authenticated account.'
+      responses:
+        '200':
+          description: 'Keys found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Keys'
+  /projects/{project_id}/keys/{key_id}:
+    get:
+      operationId: getKey
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Key'
 security:
   - ApiKeyAuth: []
 components:
@@ -64,6 +102,44 @@ components:
       in: header
       name: Authorization
   schemas:
+    Key:
+      title: API Key
+      properties:
+        api_key_id:
+          type: string
+          description: 'Identifier of the API Key.'
+        comment:
+          type: string
+          description: 'Comments associated with the API Key.'
+        created:
+          type: string
+          description: 'Date and time when the API Key was created.'
+        scopes:
+          type: array
+          description: 'Scopes associated with the API Key.'
+          items:
+            type: string
+    Keys:
+      title: Keys
+      properties:
+        api_keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberKeyPair'
+    Member:
+      title: Member
+      properties:
+        member_id:
+          type: string
+        email:
+          type: string
+    MemberKeyPair:
+      title: Member and Key
+      properties:
+        member:
+          $ref: '#/components/schemas/Member'
+        api_key:
+          $ref: '#/components/schemas/Key'
     Projects:
       title: Projects
       properties:

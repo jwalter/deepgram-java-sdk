@@ -10,7 +10,7 @@ import org.junit.jupiter.api.TestInstance
 import reactor.test.StepVerifier
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ProjectTest {
+class ProjectsTest {
 
     private val server = WireMockServer()
 
