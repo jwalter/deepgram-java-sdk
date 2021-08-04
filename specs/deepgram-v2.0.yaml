@@ -129,6 +129,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Key'
+  /projects/{project_id}/members:
+    get:
+      operationId: getMembers
+      parameters:
+        - name: project_id
+          description: 'Identifier of the project for which you want to get members.'
+          in: path
+          required: true
+          schema:
+            type: string
+      description: 'Retrieves account objects for all of the accounts in the specified project. Required account scope(s): project:read. Required project scope(s): project:read, members:read, admins:read, owners:read.'
+      responses:
+        '200':
+          description: 'Members found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Members'
+  /projects/{project_id}/members/{member_id}:
+    delete:
+      operationId: removeMember
+      description: 'Removes the specified account from the specified project. API keys created by this member for the specified project will also be deleted.'
+      parameters:
+        - name: project_id
+          description: 'Identifier of the project that contains the account you want to remove.'
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: member_id
+          description: 'Identifier of the account that you want to remove.'
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Account removed.'
 security:
   - ApiKeyAuth: []
 components:
@@ -196,6 +234,27 @@ components:
           type: string
         email:
           type: string
+    MemberComplete:
+      title: Member
+      required: ["member_id", "scopes", "email"]
+      properties:
+        member_id:
+          type: string
+          description: 'Identifier of member.'
+        first_name:
+          type: string
+          description: 'First name of member. Optional.'
+        last_name:
+          type: string
+          description: 'Last name of member. Optional.'
+        scopes:
+          type: array
+          description: 'Project scopes associated with member.'
+          items:
+            type: string
+        email:
+          type: string
+          description: 'Email address of member.'
     MemberKeyPair:
       title: Member and Key
       properties:
@@ -203,6 +262,13 @@ components:
           $ref: '#/components/schemas/Member'
         api_key:
           $ref: '#/components/schemas/Key'
+    Members:
+      title: Members
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberComplete'
     Projects:
       title: Projects
       properties:
