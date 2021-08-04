@@ -167,6 +167,58 @@ paths:
       responses:
         '200':
           description: 'Account removed.'
+  /projects/{project_id}/members/{member_id}/scopes:
+    get:
+      operationId: getMemberScopes
+      parameters:
+        - name: project_id
+          description: 'Identifier of the project that contains the member for whom you want to get scopes.'
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: member_id
+          description: 'Identifier of the member for whom you want to get scopes.'
+          in: path
+          required: true
+          schema:
+            type: string
+      description: 'Retrieves account objects for all of the accounts in the specified project. Required account scope(s): project:read. Required project scope(s): project:read, members:read, admins:read, owners:read.'
+      responses:
+        '200':
+          description: 'Scopes found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scopes'
+    put:
+      operationId: updateScope
+      parameters:
+        - name: project_id
+          description: 'Identifier of the project that contains the specified member and scope that you want to update.'
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: member_id
+          description: 'Identifier of the project that contains the specified member and scope that you want to update.'
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scope'
+      responses:
+        '200':
+          description: 'Scope updated.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
 security:
   - ApiKeyAuth: []
 components:
@@ -301,3 +353,16 @@ components:
       properties:
         message:
           type: string
+    Scope:
+      title: Scope
+      properties:
+        scope:
+          type: string
+          description: 'Scope for the specified member and project.'
+    Scopes:
+      title: Array of scopes
+      properties:
+        scopes:
+          type: array
+          items:
+            type: string

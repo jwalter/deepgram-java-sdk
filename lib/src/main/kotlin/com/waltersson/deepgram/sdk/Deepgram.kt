@@ -15,9 +15,11 @@ class Deepgram(private val apiKey: String, baseUrl: String = "https://api.deepgr
     private val projectApi = Projects(client)
     private val keysApi = Keys(client)
     private val membersApi = Members(client)
+    private val scopesApi = Scopes(client)
 
     fun projects() = projectApi
     fun keys() = keysApi
     fun members() = membersApi
+    fun scopes() = scopesApi
 }
 
