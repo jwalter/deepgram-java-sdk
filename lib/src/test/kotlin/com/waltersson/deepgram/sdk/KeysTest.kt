@@ -3,26 +3,23 @@ package com.waltersson.deepgram.sdk
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.waltersson.deepgram.model.Project
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import reactor.test.StepVerifier
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KeysTest {
 
     private val server = WireMockServer()
 
-    @BeforeAll
+    @BeforeEach
     fun startServer() {
         server.start()
     }
 
     @Test
-    fun getSingleKey() {
+    fun getKey() {
         stubFor(
             get("/projects/1/keys/1")
+                .withHeader("Authorization", equalTo("Token mykey"))
                 .willReturn(
                     okJson(
                         """
@@ -45,6 +42,8 @@ class KeysTest {
             .expectNextMatches { it.apiKeyId == "key" }
             .verifyComplete()
     }
+
+    // NYI Get key for non-existing project
 
     @Test
     fun getAllKeys() {
@@ -81,7 +80,63 @@ class KeysTest {
             .verifyComplete()
     }
 
-    @AfterAll
+    @Test
+    fun createKey() {
+        stubFor(
+            post("/projects/1/keys")
+                .withHeader("Authorization", equalTo("Token mykey"))
+                .withRequestBody(
+                    equalToJson(
+                        """
+                            {
+                                "comment": "comment",
+                                "scopes": ["scope"]
+                            }
+                        """
+                    )
+                )
+                .willReturn(
+                    okJson(
+                        """
+                        {
+                            "key": "key-value",
+                            "api_key_id": "key-id",
+                            "comment": "comment",
+                            "created": "2019-08-24T14:15:22Z",
+                            "scopes": [
+                                "scope"
+                            ]
+                        }
+                    """
+                    )
+                )
+        )
+
+        val underTest = Deepgram("mykey", server.baseUrl())
+        val actual = underTest.keys().create("1", "comment", listOf("scope"))
+        StepVerifier.create(actual)
+            .expectNextMatches { it.key == "key-value" }
+            .verifyComplete()
+    }
+
+    @Test
+    fun deleteKey() {
+        stubFor(
+            delete("/projects/1/keys/123")
+                .withHeader("Authorization", equalTo("Token mykey"))
+                .willReturn(
+                    ok()
+                )
+        )
+
+        val underTest = Deepgram("mykey", server.baseUrl())
+        val actual = underTest.keys().delete("1", "123")
+        StepVerifier.create(actual)
+            .expectNext()
+            .verifyComplete()
+    }
+
+    @AfterEach
     fun stopServer() {
         server.stop()
     }

@@ -56,6 +56,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
   /projects/{project_id}/keys:
+    post:
+      operationId: createKey
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyCreate'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyCreated'
     get:
       operationId: getKeys
       parameters:
@@ -73,6 +93,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Keys'
   /projects/{project_id}/keys/{key_id}:
+    delete:
+      operationId: deleteKey
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
     get:
       operationId: getKey
       parameters:
@@ -105,6 +141,33 @@ components:
     Key:
       title: API Key
       properties:
+        api_key_id:
+          type: string
+          description: 'Identifier of the API Key.'
+        comment:
+          type: string
+          description: 'Comments associated with the API Key.'
+        created:
+          type: string
+          description: 'Date and time when the API Key was created.'
+        scopes:
+          type: array
+          description: 'Scopes associated with the API Key.'
+          items:
+            type: string
+    KeyCreate:
+      properties:
+        comment:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+    KeyCreated:
+      properties:
+        key:
+          type: string
+          description: 'Value of the API Key. This is the only chance to read the Key value; it cannot be recovered later.'
         api_key_id:
           type: string
           description: 'Identifier of the API Key.'
