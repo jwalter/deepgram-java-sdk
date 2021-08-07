@@ -218,7 +218,211 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
+  /projects/{project_id}/requests:
+    get:
+      operationId: getAllRequests
+      parameters:
+        - name: project_id
+          description: 'Identifier of the project for which you want to retrieve requests.'
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: start
+          description: 'Start date of the requested date range. Format is YYYY-MM-DD. Defaults to the time of your first request. If no time zone is specified, defaults to Coordinated Universal Time (UTC).'
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: end
+          description: 'End date of the requested date range. Format is YYYY-MM-DD. Defaults to the current time. If no time zone is specified, defaults to Coordinated Universal Time (UTC).'
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: page
+          description: 'Page number to return from within the list of requests. Default: 0'
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          description: 'Number of results to return per page. Default: 10'
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: status
+          description: 'Status of requests to return. Enables you to filter requests depending on whether they have succeeded or failed. If not specified, returns requests with all statuses.'
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - succeeded
+              - failed
+      responses:
+        '200':
+          description: 'Requests found. Requests will be returned in descending order based on creation time (newest first).'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestsPagedResponse'
+  /projects/{project_id}/requests/{request_id}:
+    get:
+      operationId: getRequest
+      parameters:
+        - name: project_id
+          description: 'Identifier of the project for which you want to retrieve the specified request.'
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: request_id
+          description: 'Identifier of the request that you want to retrieve.'
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Request found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+  /projects/{project_id}/usage:
+    get:
+      operationId: getUsageSummary
+      parameters:
+        - name: project_id
+          description: 'Identifier of the project for which you want to summarize usage.'
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: start
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: end
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: accessor
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: tag
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: method
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: model
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: multichannel
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: interim_results
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: punctuate
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: replace
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: profanity_filter
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: keywords
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: sentiment
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: diarize
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: detect_language
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: search
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: redact
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: alternatives
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: numerals
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: boolean
 
+      responses:
+        '200':
+          description: 'Usage statistics found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageSummary'
 security:
   - ApiKeyAuth: []
 components:
@@ -353,6 +557,86 @@ components:
       properties:
         message:
           type: string
+    Callback:
+      title: API callback
+      properties:
+        code:
+          description: 'HTTP status code returned by the callback.'
+          type: integer
+        completed:
+          description: 'Date/time when callback was completed.'
+          type: string
+    Request:
+      title: API Request
+      properties:
+        request_id:
+          type: string
+        created:
+          type: string
+        path:
+          type: string
+        api_key_id:
+          type: string
+        response:
+          $ref: '#/components/schemas/Response'
+        callback:
+          $ref: '#/components/schemas/Callback'
+    Response:
+      title: API Response
+      properties:
+        details:
+          $ref: '#/components/schemas/ResponseDetails'
+        code:
+          description: 'HTTP status code returned by the request.'
+          type: integer
+        completed:
+          description: 'Date/time when request was completed.'
+          type: string
+    ResponseDetails:
+      title: Details of API Response
+      properties:
+        usd:
+          type: number
+        duration:
+          type: number
+        total_audio:
+          type: number
+        channels:
+          type: integer
+        streams:
+          type: integer
+        model:
+          type: string
+        methods:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        features:
+          type: array
+          items:
+            type: string
+        config:
+          type: object
+          properties:
+            diarize:
+              type: boolean
+            multichannel:
+              type: boolean
+    RequestsPagedResponse:
+      title: Paginated list of Requests
+      properties:
+        limit:
+          type: integer
+          description: 'Number of results to return per page. Used for pagination.'
+        page:
+          type: integer
+          description: 'Page number that should be returned. Used for pagination.'
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/Request'
     Scope:
       title: Scope
       properties:
@@ -366,3 +650,39 @@ components:
           type: array
           items:
             type: string
+    UsageSummary:
+      title: Summary of usage
+      properties:
+        start:
+          type: string
+          description: 'Start date for included requests.'
+        end:
+          type: string
+          description: 'End date for included requests.'
+        resolution:
+          type: object
+          properties:
+            units:
+              type: string
+              description: 'Units of resolution amount.'
+            amount:
+              type: integer
+              description: 'Number of days'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsageResult'
+    UsageResult:
+      properties:
+        start:
+          type: string
+          description: 'Start date of included requests.'
+        end:
+          type: string
+          description: 'End date of included requests.'
+        hours:
+          type: number
+          description: 'Length of time (in hours) of audio processed in included requests.'
+        requests:
+          type: integer
+          description: 'Number of included requests.'

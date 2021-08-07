@@ -2,8 +2,9 @@ package com.waltersson.deepgram.sdk
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.waltersson.deepgram.model.Project
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import reactor.test.StepVerifier
 
 class KeysTest {

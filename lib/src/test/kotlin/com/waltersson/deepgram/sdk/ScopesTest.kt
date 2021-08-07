@@ -3,7 +3,6 @@ package com.waltersson.deepgram.sdk
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.waltersson.deepgram.model.MessageResponse
-import com.waltersson.deepgram.model.Project
 import com.waltersson.deepgram.model.Scope
 import com.waltersson.deepgram.model.Scopes
 import org.junit.jupiter.api.AfterAll
