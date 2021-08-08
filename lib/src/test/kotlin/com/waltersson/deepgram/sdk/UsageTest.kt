@@ -44,7 +44,7 @@ class UsageTest {
                 )
         )
         val underTest = Deepgram("", server.baseUrl())
-        val actual = underTest.usage().getAllRequests(
+        val actual = underTest.usage().listRequests(
             "1",
             "2021-05-10T22:10:00Z",
             "2021-05-10T22:10:00Z",

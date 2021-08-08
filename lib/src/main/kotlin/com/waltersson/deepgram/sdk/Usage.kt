@@ -9,7 +9,8 @@ import reactor.core.publisher.Mono
 
 class Usage(private val api: DefaultApi) {
 
-    fun getAllRequests(
+    @JvmOverloads
+    fun listRequests(
         projectId: String,
         start: String? = null,
         end: String? = null,
@@ -27,6 +28,7 @@ class Usage(private val api: DefaultApi) {
         )
     }
 
+    @JvmOverloads
     fun getFields(projectId: String, start: String? = null, end: String? = null): Mono<RequestFields> {
         return api.getFields(projectId, start, end)
     }
@@ -35,6 +37,7 @@ class Usage(private val api: DefaultApi) {
         return api.getRequest(projectId, requestId)
     }
 
+    @JvmOverloads
     fun summarize(
         projectId: String,
         start: String? = null,
