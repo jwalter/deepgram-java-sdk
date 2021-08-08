@@ -318,25 +318,33 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: tag
           description: ''
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: method
           description: ''
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: model
           description: ''
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: multichannel
           description: ''
           in: query

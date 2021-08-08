@@ -1,8 +1,12 @@
 package com.waltersson.deepgram.sdk
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.matching.MatchResult
+import com.github.tomakehurst.wiremock.matching.StringValuePattern
 import com.waltersson.deepgram.model.*
+import org.apache.commons.lang3.StringUtils
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -80,12 +84,12 @@ class UsageTest {
     fun summarizeUsage() {
         stubFor(
             get(urlPathEqualTo("/projects/1/usage"))
-                .withQueryParam("start", equalTo("string"))
-                .withQueryParam("end", equalTo("string"))
-                .withQueryParam("accessor", equalTo("string"))
-                .withQueryParam("tag", equalTo("string"))
-                .withQueryParam("method", equalTo("string"))
-                .withQueryParam("model", equalTo("string"))
+                .withQueryParam("start", equalTo("start"))
+                .withQueryParam("end", equalTo("end"))
+                .withQueryParam("accessor", equalTo("accessor2"))
+                .withQueryParam("tag", equalTo("tag"))
+                .withQueryParam("method", equalTo("method"))
+                .withQueryParam("model", equalTo("model"))
                 .withQueryParam("multichannel", equalTo("false"))
                 .withQueryParam("interim_results", equalTo("false"))
                 .withQueryParam("punctuate", equalTo("false"))
@@ -103,7 +107,28 @@ class UsageTest {
         )
 
         val underTest = Deepgram("mykey", server.baseUrl())
-        val actual = underTest.usage().summarize("1")
+        val actual = underTest.usage().summarize(
+            "1",
+            "start",
+            "end",
+            listOf("accessor2"),
+            listOf("tag"),
+            listOf("method"),
+            listOf("model"),
+            multichannel = false,
+            interimResults = false,
+            punctuate = false,
+            replace = false,
+            profanityFilter = false,
+            keywords = false,
+            sentiment = false,
+            diarize = false,
+            detectLanguage = false,
+            search = false,
+            redact = false,
+            alternatives = false,
+            numerals = false
+        )
         StepVerifier.create(actual)
             .expectNext(sampleUsage)
             .verifyComplete()
@@ -138,11 +163,12 @@ class UsageTest {
         .start("2019-08-24T14:15:22Z")
         .end("2019-08-24T14:15:22Z")
         .resolution(UsageSummaryResolution().units("string").amount(0))
-        .addResultsItem(UsageResult()
-            .start("2019-08-24T14:15:22Z")
-            .end("2019-08-24T14:15:22Z")
-            .hours(BigDecimal(0))
-            .requests(0)
+        .addResultsItem(
+            UsageResult()
+                .start("2019-08-24T14:15:22Z")
+                .end("2019-08-24T14:15:22Z")
+                .hours(BigDecimal(0))
+                .requests(0)
         )
 
     private val sampleRequestJson = """
