@@ -2,6 +2,8 @@
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg?style=flat-rounded)](CODE_OF_CONDUCT.md)
 
+_NOTE: This SDK is completely unoffical and in no way endorsed or supported by Deepgram. Use at your own risk._
+
 Reactive work-in-progress Java and Kotlin SDK for [Deepgram](https://www.deepgram.com)'s automated
 speech recognition APIs.
 
