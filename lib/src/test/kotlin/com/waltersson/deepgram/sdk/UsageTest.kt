@@ -1,12 +1,8 @@
 package com.waltersson.deepgram.sdk
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.github.tomakehurst.wiremock.matching.MatchResult
-import com.github.tomakehurst.wiremock.matching.StringValuePattern
 import com.waltersson.deepgram.model.*
-import org.apache.commons.lang3.StringUtils
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -134,11 +130,57 @@ class UsageTest {
             .verifyComplete()
     }
 
-    // Test multiple accessor, tag, method, model values
+    @Test
+    fun getFields() {
+        stubFor(
+            get(urlPathEqualTo("/projects/1/usage/fields"))
+                .withQueryParam("start", equalTo("startValue"))
+                .withQueryParam("end", equalTo("endValue"))
+                .willReturn(okJson(sampleFieldsJson))
+        )
+
+        val underTest = Deepgram("mykey", server.baseUrl())
+        val actual = underTest.usage().getFields("1", "startValue", "endValue")
+        StepVerifier.create(actual)
+            .expectNext(sampleFields)
+            .verifyComplete()
+    }
+
     @AfterAll
     fun stopServer() {
         server.stop()
     }
+
+
+    private val sampleFieldsJson = """
+        {
+            "tags": [
+                "dev"
+            ],
+            "models": [
+                "modelsValue"
+            ],
+            "processing_methods": [
+                "processingMethodsValueA",
+                "processingMethodsValueB"
+            ],
+            "languages": [
+                "languagesValue1",
+                "languagesValue2"
+            ],
+            "features": [
+                "multichannel",
+                "interim_results"
+            ]
+        }
+    """
+
+    private val sampleFields = RequestFields()
+        .tags(listOf("dev"))
+        .models(listOf("modelsValue"))
+        .processingMethods(listOf("processingMethodsValueA", "processingMethodsValueB"))
+        .languages(listOf("languagesValue1", "languagesValue2"))
+        .features(listOf("multichannel", "interim_results"))
 
     private val sampleUsageJson = """
         {

@@ -2,6 +2,7 @@ package com.waltersson.deepgram.sdk
 
 import com.waltersson.deepgram.api.DefaultApi
 import com.waltersson.deepgram.model.Request
+import com.waltersson.deepgram.model.RequestFields
 import com.waltersson.deepgram.model.RequestsPagedResponse
 import com.waltersson.deepgram.model.UsageSummary
 import reactor.core.publisher.Mono
@@ -24,6 +25,10 @@ class Usage(private val api: DefaultApi) {
             limit,
             status
         )
+    }
+
+    fun getFields(projectId: String, start: String? = null, end: String? = null): Mono<RequestFields> {
+        return api.getFields(projectId, start, end)
     }
 
     fun getRequest(projectId: String, requestId: String): Mono<Request> {

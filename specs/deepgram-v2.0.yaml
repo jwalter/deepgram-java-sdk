@@ -431,6 +431,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UsageSummary'
+  /projects/{project_id}/usage/fields:
+    get:
+      operationId: getFields
+      description: 'Lists the features, models, tags, languages, and processing method used for requests in the specified project. You can specify a time range.'
+      parameters:
+        - name: project_id
+          description: 'Identifier of the project for which you want to retrieve fields.'
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: start
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: end
+          description: ''
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Request fields found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestFields'
 security:
   - ApiKeyAuth: []
 components:
@@ -589,6 +619,28 @@ components:
           $ref: '#/components/schemas/Response'
         callback:
           $ref: '#/components/schemas/Callback'
+    RequestFields:
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+        models:
+          type: array
+          items:
+            type: string
+        processing_methods:
+          type: array
+          items:
+            type: string
+        languages:
+          type: array
+          items:
+            type: string
+        features:
+          type: array
+          items:
+            type: string
     Response:
       title: API Response
       properties:
