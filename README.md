@@ -4,7 +4,7 @@
 
 _NOTE: This SDK is completely unoffical and in no way endorsed or supported by Deepgram. Use at your own risk._
 
-Reactive work-in-progress Java and Kotlin SDK for [Deepgram](https://www.deepgram.com)'s automated
+Work-in-progress reactive Java and Kotlin SDK for [Deepgram](https://www.deepgram.com)'s automated
 speech recognition APIs.
 
 To access the API you will need a Deepgram account. Sign up for free at
